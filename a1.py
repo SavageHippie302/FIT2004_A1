@@ -1,0 +1,1 @@
+def intercept(roads, stations, start, friendStart):
