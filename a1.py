@@ -23,25 +23,37 @@ def intercept(roads, stations, start, friendStart):
     for road in roads:
         maxLoc = max(maxLoc, road[0], road[1])
 
-    # Adj list for roads
-    roads_adj = [[] for i in range(maxLoc + 1)]
+    # Adj list for locations [locations are the index of the list]
+    locAdj = [[] for i in range(maxLoc + 1)]
 
     for source, dest, cost, time in roads:
-        roads_adj[source].append((dest, cost , time))
+        locAdj[source].append((dest, cost , time))
         
-    print(roads_adj)
+    print(locAdj)
+
+    # Index each station
+    stationIndex = [None] * (maxLoc + 1)
+    
+    for i, (station, _) in enumerate(stations):
+        stationIndex[station] = i
+    print(stationIndex)
+
     # Get index of friendStart
-    friendStartIndex = -1
-    '''
-    for i in range(len(stations)):
-        if stations[0] == friendStart
-    '''
+    friendStartIndex = stationIndex[friendStart]
+
+    # Total time for one train loop (NOTE: i think it's needed)
+    trainLoopTime = 0
+    for i, time in stations:
+        trainLoopTime += time
+    print(trainLoopTime)
     
 
-roads = [(0,1,35,3), (1,2,5,2), (2,0,35,4), (0,4,10,1), (4,1,22,2),
-(1,5,65,1), (5,2,70,1), (2,3,10,1), (3,0,20,3)]
-stations = [(4,3), (5,2), (3,4)]
-start = 0
-friendStart = 4
+roads = [(6,0,3,1), (6,7,4,3), (6,5,6,2), (5,7,10,5), (4,8,8,5), (5,4,8,2),
+(8,9,1,2), (7,8,1,3), (8,3,2,3), (1,10,5,4), (0,1,10,3), (10,2,7,2),
+(3,2,15,2), (9,3,2,2), (2,4,10,5)]
+stations = [(0,1), (5,1), (4,1), (3,1), (2,1), (1,1)]
+start = 6
+friendStart = 0
 
 (intercept(roads, stations, start, friendStart))
+#(7, 9, [6,7,8,3])
