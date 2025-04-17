@@ -1,3 +1,5 @@
+import heapq
+
 def intercept(roads, stations, start, friendStart):
     '''
     TODO: 
@@ -84,9 +86,52 @@ def intercept(roads, stations, start, friendStart):
         return dist[1..n], pred[1..n]
     '''
 
+    # Dijkstra time !!
+    inf = float('inf')
 
+    # initialise arrays for distances, time, pointers
+    distances = [[inf] * trainLoopTime for i in range(maxLoc + 1)]
+    print(distances)
+    times = [[inf] * trainLoopTime for i in range(maxLoc + 1)]
 
+    # prio queue, param: [cost, tiem, length, location, time mod]
+    # initial state
+    pq = [(0, 0, 1, start, 0)]
 
+    distances[start][0] = 0
+    times[start][0] = 0
+
+    # initialise optimal interception parameters/variables (these will update until optimal solution found)
+    bestCost = inf
+    bestTime = inf # total time
+    bestLength = inf
+    bestLoc = -1
+    bestTimeMod = -1 # time modulo (where in train cycle friend is)
+
+    # looping start
+    while pq:
+        # pop highest priority element and store into variables
+        cost, time, length, loc, timeMod = heapq.heappop(pq)
+
+        # check if better solution is found already
+        if cost > bestCost:
+            continue
+
+        # check if better path to current state found already
+        if cost > distances[loc][timeMod]:
+            continue
+        
+        # check if we can intercept
+        if loc == friendPos[timeMod]:
+            # first hit or beats previous hit
+            if bestLoc == -1 or cost < bestCost:
+                bestCost = cost
+                bestTime = time
+                bestLength = length
+                bestLoc = loc
+                bestTimeMod = timeMod
+
+            continue
 
 roads = [(6,0,3,1), (6,7,4,3), (6,5,6,2), (5,7,10,5), (4,8,8,5), (5,4,8,2),
 (8,9,1,2), (7,8,1,3), (8,3,2,3), (1,10,5,4), (0,1,10,3), (10,2,7,2),
@@ -94,6 +139,5 @@ roads = [(6,0,3,1), (6,7,4,3), (6,5,6,2), (5,7,10,5), (4,8,8,5), (5,4,8,2),
 stations = [(0,1), (5,1), (4,1), (3,1), (2,1), (1,1)]
 start = 6
 friendStart = 0
-
 (intercept(roads, stations, start, friendStart))
 #(7, 9, [6,7,8,3])
